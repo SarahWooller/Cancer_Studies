@@ -14,10 +14,10 @@ use App\Http\Controllers\Api\KeywordController;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "api" middleware group. Make something great!
 |
-*/
+*/// --- TEMPORARY DEBUGGING CODE ---
 
 // Route for fetching all studies with their keywords and metadata
-Route::get('/studies', [StudyController::class, 'index']);
+Route::get('/studies', [StudyController::class, 'filterStudies']);
 
 // Route for fetching the hierarchical keyword structure
 Route::get('/keywords-hierarchy', [KeywordController::class, 'hierarchy']);

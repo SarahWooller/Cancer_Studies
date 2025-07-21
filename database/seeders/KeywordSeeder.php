@@ -72,7 +72,7 @@ class KeywordSeeder extends Seeder
                             "Mouse",
                             "Patient"
                         ],
-                    ] // Corrected: Changed '}' to ']' here
+                    ]
                 ]
             ],
             [
@@ -98,9 +98,7 @@ class KeywordSeeder extends Seeder
                         "Radiographic imaging procedure",
                         "Ultrasonography",
                         "Fluorescence imaging",
-                        "Microscopy",
                         "Bioluminescence Imaging",
-
                     ],
                     "Longitudinal Follow up" => [
                         "Behavioural data",
@@ -247,16 +245,12 @@ class KeywordSeeder extends Seeder
                         "Ecological study",
                         "Intervention study"
                     ]
-                ] // Corrected: Changed '}' to ']' here
+                ]
             ]
         ];
 
-        // This is the new way to initiate the seeding for each top-level category
         foreach ($keywordsData as $topLevelArray) {
             foreach ($topLevelArray as $categoryName => $categoryData) {
-                // Now, call the recursive function for each main category
-                // We pass the category name directly as the first argument,
-                // and its children data as the second, with null parent_id.
                 $this->seedKeywordNode($categoryName, $categoryData, null);
             }
         }
@@ -266,7 +260,6 @@ class KeywordSeeder extends Seeder
 
     /**
      * Seeds a keyword node and its children recursively.
-     * This function is now designed to handle a single node's data.
      *
      * @param string $keywordName The name of the current keyword.
      * @param array|string $childrenData The data for its children, or the value itself if it's a leaf.
@@ -276,11 +269,10 @@ class KeywordSeeder extends Seeder
     {
         $type = null;
 
-        // Determine the type of the current keyword based on its structure and parent_id
         if ($parentId === null) {
             $type = 'category';
         } elseif (is_array($childrenData) && !empty($childrenData) && !is_numeric(array_key_first($childrenData))) {
-            $type = 'subcategory'; // Has children and the first child key is a string (e.g., "Cell Line Study")
+            $type = 'subcategory'; // Has children and the first child key is a string (e.g., "Cell Line Type")
         } elseif (is_array($childrenData) && !empty($childrenData) && is_numeric(array_key_first($childrenData))) {
              // This is an array of values, e.g., ["Breast", "Central Nervous System"]
              // The $keywordName (e.g., "Primary sites") is a subcategory, and its children are values
@@ -289,28 +281,22 @@ class KeywordSeeder extends Seeder
             $type = 'value'; // It's a simple string value, a leaf node
         }
 
+        // Use parent_id in the firstOrCreate condition to correctly identify unique keywords
         $keyword = Keyword::firstOrCreate(
-            ['keyword' => $keywordName],
-            ['parent_id' => $parentId, 'type' => $type]
+            ['keyword' => $keywordName, 'parent_id' => $parentId],
+            ['type' => $type]
         );
 
-        // If $childrenData is an array, we need to recurse for its children
         if (is_array($childrenData)) {
-            // Case 1: Children are themselves associative arrays (subcategories/values with named keys)
-            // Example: "Cell Line Study" => ["Cell Line Type" => [...]]
             if (!empty($childrenData) && !is_numeric(array_key_first($childrenData))) {
                 foreach ($childrenData as $childName => $grandChildrenData) {
                     $this->seedKeywordNode($childName, $grandChildrenData, $keyword->id);
                 }
-            }
-            // Case 2: Children are a simple indexed array of values
-            // Example: "Primary sites" => ["Breast", "Central Nervous System"]
-            else {
+            } else {
                 foreach ($childrenData as $childValue) {
                     $this->seedKeywordNode($childValue, null, $keyword->id); // Pass null as childrenData for leaf
                 }
             }
         }
-        // If $childrenData is not an array, it's a leaf value and recursion stops.
     }
 }
