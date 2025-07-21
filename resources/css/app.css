@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* General reset and body styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* App Header */
+.app-header {
+    background-color: #004d40; /* Dark teal */
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo-placeholder {
+    background-color: #00796b; /* Slightly lighter teal */
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+/* Main Content Area */
+.main-content {
+    display: flex;
+    flex-grow: 1;
+}
+
+.sidebar {
+    width: 280px; /* Width of the left navbar */
+    background-color: #e0f2f1; /* Light teal */
+    padding: 1.5rem;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+    overflow-y: auto; /* Enable scrolling if content overflows */
+}
+
+.content-area {
+    flex-grow: 1;
+    padding: 1.5rem;
+    background-color: #fff;
+    overflow-y: auto; /* Enable scrolling if content overflows */
+}
+
+/* Messages */
+.loading-message, .error-message {
+    padding: 2rem;
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
+}
+
+.error-message {
+    color: #d32f2f; /* Red for errors */
+}
+
+/* Basic table styling (for StudyTable component) */
+.study-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.study-table th, .study-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.study-table th {
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+.study-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.study-table tr:hover {
+    background-color: #eaf7f7;
+}
+
+.study-title-link {
+    color: #00796b;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.study-title-link:hover {
+    text-decoration: underline;
+}
+
+/* Basic styling for StudyDetail (we'll refine later) */
+.study-detail-panel {
+    border: 1px solid #ccc;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    background-color: #fdfdfd;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.study-detail-panel h2 {
+    color: #004d40;
+    margin-top: 0;
+}
+
+.study-detail-panel pre {
+    background-color: #eee;
+    padding: 1rem;
+    border-radius: 4px;
+    white-space: pre-wrap; /* Ensures long lines wrap */
+    word-break: break-all; /* Breaks words if necessary */
+    font-family: monospace;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.study-detail-panel button {
+    background-color: #00796b;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.study-detail-panel button:hover {
+    background-color: #004d40;
+}
+
+/* NavBar Styling (initial) */
+.navbar-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+.navbar-container li {
+    margin-bottom: 0.5rem;
+}
+
+.navbar-container .keyword-item {
+    cursor: pointer;
+    padding: 5px 0;
+    color: #004d40;
+}
+
+.navbar-container .keyword-item:hover {
+    text-decoration: underline;
+}
+
+.navbar-container .selected-keyword {
+    font-weight: bold;
+    color: #00796b;
+}
+
+.navbar-container .keyword-children {
+    margin-left: 15px;
+    border-left: 1px solid #b2dfdb;
+    padding-left: 5px;
+}
+
+.navbar-container .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.navbar-container .checkbox-item input[type="checkbox"] {
+    cursor: pointer;
+}

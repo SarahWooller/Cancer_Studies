@@ -1,0 +1,84 @@
+/* resources/css/components/NavBar.css */
+
+.navbar-container {
+    width: 250px;
+    padding: 20px;
+    border-right: 1px solid #eee;
+    background-color: #f9f9f9;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    overflow-y: auto; /* Enable scrolling if content exceeds height */
+    height: calc(100vh - 40px); /* Adjust based on header/footer if any */
+}
+
+.navbar-container h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.2em;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+}
+
+.navbar-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar-container li {
+    margin-bottom: 5px;
+}
+
+/* Style for category/subcategory headers (clickable for expansion) */
+.keyword-category-header {
+    cursor: pointer;
+    padding: 5px 0;
+    font-weight: bold;
+    color: #555;
+    display: flex; /* To align icon and text */
+    align-items: center;
+}
+
+.keyword-category-header:hover {
+    color: #007bff; /* Hover effect */
+}
+
+/* Style for the expand/collapse icon */
+.expand-icon {
+    margin-right: 8px;
+    font-size: 0.8em;
+    width: 15px; /* Fixed width for alignment */
+    text-align: center;
+}
+
+/* Style for individual checkbox items (value keywords) */
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px 0;
+    color: #333;
+}
+
+.checkbox-item input[type="checkbox"] {
+    margin-right: 8px;
+    accent-color: #007bff; /* Custom color for checkbox */
+}
+
+.checkbox-item:hover {
+    color: #007bff;
+}
+
+/* Indentation for children lists */
+.keyword-children {
+    padding-left: 20px; /* Indent nested lists */
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* Styling for selected keywords (if you want to highlight them visually) */
+/* This can be added to the App.jsx or NavBar.jsx if needed */
+.selected-keyword {
+    color: #007bff;
+    font-weight: bold;
+}
