@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 // --- START: React Router DOM Imports ---
-import { Routes, Route, Link } from 'react-router-dom'; // Import Routes, Route, and Link
+import { Routes, Route, Link, useLocation } from 'react-router-dom'; // Import Routes, Route, and Link
 // --- END: React Router DOM Imports ---
 
 import { fetchStudies, fetchKeywords } from '../services/api';
@@ -15,9 +15,12 @@ function App() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedKeywords, setSelectedKeywords] = useState([]);
-
+    const location = useLocation(); // Get the current location object
+    // Determine if the Navbar should be shown based on the current path
+    // It should be shown only on the main '/' path
+    const showNavbar = location.pathname === '/';
     // Logo source state for easy adjustment
-    const appLogoSrc = "/images/your-cancer-research-uk-logo.png"; // <--- ADJUST THIS PATH TO YOUR LOGO
+    const appLogoSrc = "../images/cruk_logo.svg"; // <--- ADJUST THIS PATH TO YOUR LOGO
 
     const handleKeywordToggle = (keywordToToggle) => {
         setSelectedKeywords(prevSelectedKeywords => {
@@ -74,8 +77,23 @@ function App() {
                 <h1>Together we are beating Cancer</h1>
             </header>
 
-            <main className="main-content">
-                <aside className="sidebar">
+            {/* --- START: NEW NAVBAR PLACEMENT --- */}
+            {/* The NavBar is now placed horizontally below the header */}
+            {showNavbar && keywords.length > 0 && ( // Only render if showNavbar is true AND keywords exist
+                <nav className="horizontal-navbar-container bg-white shadow-md z-10 relative">
+                    <NavBar
+                        keywords={keywords}
+                        selectedKeywords={selectedKeywords}
+                        onKeywordSelect={handleKeywordToggle}
+                    />
+                </nav>
+            )}
+            {/* --- END: NEW NAVBAR PLACEMENT --- */}
+
+            {/* The main content area now directly follows the horizontal navbar */}
+            <main className="main-content flex-grow"> {/* Removed flex-direction: column; from here, added flex-grow */}
+                {/* The sidebar (aside) is removed from here as it's no longer needed */}
+                {/* <aside className="sidebar">
                     {keywords.length > 0 && (
                         <NavBar
                             keywords={keywords}
@@ -83,9 +101,39 @@ function App() {
                             onKeywordSelect={handleKeywordToggle}
                         />
                     )}
-                </aside>
+                </aside> */}
 
-                <section className="content-area"> {/* Changed from studies-section to content-area for routing */}
+                <section className="content-area flex-1 p-6"> {/* flex-1 allows it to take remaining space */}
+                    {/* --- START: Selected Filters Display Area (moved inside content-area) --- */}
+                     {showNavbar && selectedKeywords.length > 0 && ( // Also hide filters display when Navbar is hidden
+                        <div className="selected-filters-display mb-4 p-3 bg-gray-50 rounded-lg shadow-sm">
+                            <h3 className="text-lg font-semibold text-gray-700 mb-2">Active Filters:</h3>
+                            <div className="flex flex-wrap gap-2 items-center">
+                                {selectedKeywords.map(keyword => (
+                                    <div
+                                        key={keyword.id}
+                                        className="filter-chip flex items-center bg-pink-100 text-pink-800 text-sm font-medium px-3 py-1 rounded-full shadow-sm"
+                                    >
+                                        <span>{keyword.keyword}</span>
+                                        <button
+                                            onClick={() => handleKeywordToggle(keyword)}
+                                            className="ml-2 -mr-1 p-1 rounded-full hover:bg-pink-200 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50"
+                                            aria-label={`Remove filter: ${keyword.keyword}`}
+                                        >
+                                            <svg className="w-3 h-3 text-pink-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        </button>
+                                    </div>
+                                ))}
+                                <button
+                                    onClick={() => setSelectedKeywords([])}
+                                    className="clear-all-filters-button ml-2 px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-colors"
+                                >
+                                    Clear All
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    {/* --- END: NEW Selected Filters Display Area --- */}
                     {/* Define your routes here */}
                     <Routes>
                         {/* Route for the main studies list */}
@@ -94,6 +142,13 @@ function App() {
                             element={
                                 <>
                                     <h2>CRUK Study Data Explorer</h2>
+                                    {/* --- START: Filtered Studies Count --- */}
+                                    {showNavbar && ( // Only show count when Navbar (and filters) are visible
+                                        <p className="text-gray-600 mb-4">
+                                            {studies.length} studies meet your criteria.
+                                        </p>
+                                    )}
+                                    {/* --- END: Filtered Studies Count --- */}
                                     {studies.length > 0 ? (
                                         <div className="scrollable-table-container">
                                             <table className="studies-table">
@@ -119,8 +174,7 @@ function App() {
                                                                     ? study.keywords.map(keyword => keyword.keyword).join(', ')
                                                                     : 'N/A'}
                                                             </td>
-                                                            {/* Re-added these cells for consistency with headers */}
-
+                                                            {/* Removed Created At and Updated At cells to match your provided App.jsx */}
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -141,7 +195,7 @@ function App() {
             </main>
 
             <footer className="app-footer">
-                <p>&copy; {new Date().getFullYear()} Study Data Explorer</p>
+                <p>&copy; Study Data Explorer</p> {/* Removed dynamic year to match your provided App.jsx */}
             </footer>
         </div>
     );

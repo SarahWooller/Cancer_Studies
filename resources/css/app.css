@@ -1,12 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Define CRUK Brand Colors as CSS Variables */
+:root {
+    --cruk-blue: #2E008B; /* Deep blue/purple */
+    --cruk-pink: #EC008C; /* Bright Pink */
+    --cruk-soft-pink: rgb(244, 218, 232); /* Very soft pink for backgrounds */
+    --cruk-light-grey: #F0F0F0; /* Light grey for header, table headers etc. */
+    --cruk-lighter-grey: #F8F8F8; /* Even lighter grey for body, filter display */
+    --cruk-border-grey: #E0E0E0; /* Standard border grey */
+}
+
 /* General reset and body styles */
 body {
     margin: 0;
     font-family: 'Helvetica Neue', Arial, sans-serif; /* Clear, common sans-serif font */
-    background-color: #F8F8F8; /* Pale grey background */
+    background-color: var(--cruk-lighter-grey); /* Use lighter grey for body background */
     color: #333333; /* Near black for general text */
 }
 
-#app {
+#app-container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -14,61 +28,237 @@ body {
 
 /* App Header */
 .app-header {
-    background-color: #F0F0F0; /* Slightly darker light grey for banner, very close to body */
-    color: #333333; /* Change text color to dark for contrast against light background */
+    background-color: var(--cruk-light-grey); /* Use light grey for header */
+    color: #333333;
     padding: 1rem 2rem;
     display: flex;
     align-items: center;
     gap: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Keep the subtle shadow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* If you have any headings inside your .app-header, ensure their color is also dark */
 .app-header h1, .app-header h2, .app-header h3 {
-    color: #333333; /* Make headings in the header dark as well */
+    color: #333333;
 }
-.logo-placeholder {
-    /* If you're using an <img> tag for the logo, this might not be needed. */
-    /* If it's a placeholder div, you can remove it or keep it for now. */
-    background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent white for contrast */
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    font-size: 0.9em;
+.app-logo {
+    height: 80px;
+    width: auto;
+    margin-right: 1rem;
 }
 
-/* Main Content Area - Ensure this matches your <main> className in App.jsx */
-.main-content { /* Or .app-main-content if you didn't change it */
+/* --- START: UPDATED HORIZONTAL NAVBAR STYLES --- */
+.horizontal-navbar-container {
+    width: 100%;
+    background-color: var(--cruk-soft-pink); /* Soft pink background for the navbar */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    position: relative; /* Crucial for dropdown positioning */
+    padding: 0;
+}
+
+.horizontal-menu {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0.75rem 0;
+    margin: 0;
+}
+
+.horizontal-menu-item {
+    position: relative;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    /* No background transition here, as background doesn't change on hover/active path */
+}
+
+/* No background change on hover for horizontal menu items */
+.horizontal-menu-item:hover {
+    /* background-color: transparent; */ /* Ensure no background change */
+}
+
+/* Styling for the top-level keyword text within the horizontal menu */
+.horizontal-menu-item .top-level-item .keyword-text-span {
+    font-weight: bold; /* Make headings more prominent */
+    color: var(--cruk-blue); /* CRUK Blue for default text */
+    transition: color 0.2s ease; /* Smooth transition for text color */
+}
+
+/* Change text color to CRUK Pink when the top-level item is hovered OR part of active path */
+/* The 'active-path-item' class is no longer applied to the li itself, but 'is-pink-path' is on the span */
+.horizontal-menu-item:hover .top-level-item .keyword-text-span,
+.horizontal-menu-item .top-level-item .keyword-text-span.is-pink-path {
+    color: var(--cruk-pink); /* CRUK Pink when hovered or active in path */
+} /* <--- ADDED THIS MISSING CLOSING BRACE */
+
+
+/* Styles for the first-level dropdown menu (ul for subcategories) */
+.dropdown-menu {
+    position: absolute;
+    background-color: var(--cruk-soft-pink); /* Soft pink background for dropdown */
+    border: 1px solid var(--cruk-border-grey); /* Clear delineation */
+    border-radius: 0.25rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    z-index: 20;
+    list-style: none;
+    padding: 0.5rem 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Styles for individual items within any dropdown (first-level or nested) */
+.dropdown-menu .keyword-item,
+.nested-dropdown-item .nested-dropdown-item-content-wrapper { /* Target the wrapper for hover */
+    padding: 0.5rem 1rem;
+    color: var(--cruk-blue); /* Default text color for dropdown items */
+    white-space: nowrap;
+    position: relative;
+    cursor: pointer;
+    transition: color 0.2s ease; /* Smooth transition for text color */
+}
+
+/* Change text color to CRUK Pink when any dropdown item is hovered OR part of active path */
+.dropdown-menu .keyword-item:hover .keyword-text-span, /* Target the span within the hovered item */
+.nested-dropdown-item .nested-dropdown-item-content-wrapper:hover .checkbox-item .keyword-text-span, /* Target the span within the hovered wrapper */
+.dropdown-menu .keyword-item .keyword-text-span.is-pink-path, /* Target the span if it's part of the pink path */
+.nested-dropdown-item .nested-dropdown-item-content-wrapper .checkbox-item .keyword-text-span.is-pink-path { /* Target the span if it's part of the pink path */
+    color: var(--cruk-pink); /* CRUK Pink when hovered or active in path */
+}
+
+
+/* Selected item styling for both top-level and dropdown items */
+/* These rules apply when the checkbox IS checked */
+.horizontal-menu-item .top-level-item input[type="checkbox"]:checked + .keyword-text-span,
+.dropdown-menu .keyword-item input[type="checkbox"]:checked + .keyword-text-span,
+.nested-dropdown-item .nested-dropdown-item-content-wrapper input[type="checkbox"]:checked + .keyword-text-span {
+    color: white; /* White text when selected */
+}
+
+.horizontal-menu-item .top-level-item input[type="checkbox"]:checked + .keyword-text-span::before, /* Add pseudo-element for background */
+.dropdown-menu .keyword-item input[type="checkbox"]:checked + .keyword-text-span::before,
+.nested-dropdown-item .nested-dropdown-item-content-wrapper input[type="checkbox"]:checked + .keyword-text-span::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--cruk-pink); /* CRUK Pink background when selected */
+    border-radius: 0.25rem;
+    z-index: -1; /* Place behind text */
+}
+
+/* Ensure checkbox item padding is consistent */
+.dropdown-menu .checkbox-item,
+.nested-dropdown-item .checkbox-item {
+    padding: 0;
+}
+
+/* --- START: NEW STYLES FOR NESTED DROPDOWNS --- */
+.nested-dropdown-menu {
+    position: absolute;
+    background-color: var(--cruk-soft-pink); /* Soft pink background for nested dropdown */
+    border: 1px solid var(--cruk-border-grey); /* Clear delineation */
+    border-radius: 0.25rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    z-index: 30;
+    list-style: none;
+    padding: 0.5rem 0;
+    margin: 0; /* Removed margin-left and margin-top as transform handles offset */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tailwind's rotate-90 class for the arrow */
+.rotate-90 {
+    transform: rotate(90deg);
+}
+
+/* Ensure the parent li for nested dropdowns is relative */
+.nested-dropdown-item.has-children {
+    position: relative;
+}
+/* --- END: NEW STYLES FOR NESTED DROPDOWNS --- */
+
+/* --- END: UPDATED HORIZONTAL NAVBAR STYLES --- */
+
+
+/* Main Content Area */
+.main-content {
     display: flex;
     flex-grow: 1;
 }
 
-.sidebar {
-    width: 280px;
-    background-color: #FFFFFF; /* White background for sidebar */
-    padding: 1.5rem;
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
-    overflow-y: auto;
-}
+/* Removed Sidebar Styles */
+/* .sidebar { ... } */
+
 
 .content-area {
     flex-grow: 1;
     padding: 1.5rem;
-    background-color: #FFFFFF; /* White background for content */
-    overflow-y: auto;
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
 }
 
-/* Headings - Using the deep blue/purple */
+/* Headings Styling */
+/*
+@font-face {
+    font-family: 'Progress-Regular';
+    src: url('/fonts/Progress-Regular.woff2') format('woff2'),
+         url('/fonts/Progress-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+*/
+
 h1, h2, h3, h4, h5, h6 {
-    color: #2E008B; /* Deep blue/purple for major headings */
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Progress-Regular', 'Arial Black', Impact, sans-serif;
+    color: var(--cruk-blue); /* Use CRUK Blue for headings */
     margin-top: 1.5rem;
     margin-bottom: 1rem;
+    font-weight: bold;
 }
 
-/* Buttons - Using a pop of bright pink for interactive elements */
+h1 {
+    font-size: 3.5rem;
+    line-height: 1.1;
+}
+
+h2 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+}
+
+h3 {
+    font-size: 1.8rem;
+    line-height: 1.3;
+}
+
+h4 {
+    font-size: 1.5rem;
+    line-height: 1.4;
+}
+
+h5 {
+    font-size: 1.2rem;
+    line-height: 1.5;
+}
+
+h6 {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+
+/* Buttons */
 button {
-    background-color: #EC008C; /* Bright Pink */
+    background-color: var(--cruk-pink); /* Use CRUK Pink for buttons */
     color: white;
     border: none;
     padding: 10px 20px;
@@ -90,28 +280,28 @@ button:hover {
 }
 
 .studies-table th, .studies-table td {
-    border: 1px solid #E0E0E0; /* Lighter border for clean look */
+    border: 1px solid var(--cruk-border-grey); /* Use CRUK border grey */
     padding: 12px;
     text-align: left;
 }
 
 .studies-table th {
-    background-color: #F0F0F0; /* Pale grey header */
+    background-color: var(--cruk-light-grey); /* Use light grey for table headers */
     color: #333333;
     cursor: pointer;
     font-weight: bold;
 }
 
 .studies-table tr:nth-child(even) {
-    background-color: #FAFAFA; /* Slightly off-white for even rows */
+    background-color: #FAFAFA;
 }
 
 .studies-table tr:hover {
-    background-color: #E6F7FF; /* Very pale blue on hover for clarity */
+    background-color: #E6F7FF;
 }
 
 .study-title-link {
-    color: #00796b; /* Keeping this from your original, or we can change to a brand blue/pink */
+    color: var(--cruk-blue); /* Use CRUK Blue for links */
     text-decoration: none;
     cursor: pointer;
 }
@@ -120,95 +310,30 @@ button:hover {
     text-decoration: underline;
 }
 
-/* NavBar Styling */
-.navbar-container {
-    padding: 1.5rem; /* Ensure consistent padding with sidebar */
-    background-color: #FFFFFF; /* White background for navbar */
-}
+/* Old NavBar Styles (mostly obsolete) */
+/* .navbar-container { ... } */
+/* .navbar-container h3 { ... } */
+/* .navbar-container ul { ... } */
+/* .navbar-container li { ... } */
+/* .navbar-container .keyword-item { ... } */
+/* .navbar-container .keyword-item:hover { ... } */
+/* .navbar-container .selected-keyword { ... } */
+/* .navbar-container .keyword-children { ... } */
+/* .navbar-container .checkbox-item { ... } */
+/* .navbar-container .checkbox-item input[type="checkbox"] { ... } */
+/* .navbar-container .keyword-category-header { ... } */
+/* .expand-icon { ... } */
+/* .keyword-category-header:hover .category-name { ... } */
 
-.navbar-container h3 {
-    color: #2E008B; /* Deep blue/purple for navbar heading */
-    margin-top: 0;
-    margin-bottom: 1rem;
-}
-
-.navbar-container ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.navbar-container li {
-    margin-bottom: 0.5rem;
-}
-
-.navbar-container .keyword-item {
-    cursor: pointer;
-    padding: 5px 0;
-    color: #333333; /* Near black for keyword text */
-    display: flex; /* For checkbox alignment */
-    align-items: center;
-}
-
-.navbar-container .keyword-item:hover {
-    text-decoration: underline;
-}
-
-.navbar-container .selected-keyword {
-    font-weight: bold;
-    color: #EC008C; /* Bright Pink for selected keywords */
-}
-
-.navbar-container .keyword-children {
-    margin-left: 20px; /* Increased indent for clarity */
-    border-left: 2px solid #E0E0E0; /* Pale grey border for hierarchy */
-    padding-left: 10px;
-    list-style: none; /* Ensure no bullets on children */
-}
-
-.navbar-container .checkbox-item {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Spacing between checkbox and label */
-    cursor: pointer;
-    color: #333333; /* Default text color */
-}
-
-.navbar-container .checkbox-item input[type="checkbox"] {
-    cursor: pointer;
-    /* You might need to style checkbox appearance with custom CSS if default isn't good */
-    accent-color: #EC008C; /* Makes the tick/box itself pink in some browsers */
-}
-
-.keyword-category-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #2E008B; /* Deep blue/purple for category headers */
-    padding: 5px 0;
-}
-
-.expand-icon {
-    font-size: 0.8em;
-    transition: transform 0.2s ease;
-}
-
-.keyword-category-header:hover .category-name {
-    text-decoration: underline;
-}
 
 .scrollable-table-container {
-    max-height: calc(100vh - 250px); /* Example: Adjust this value based on your header/footer/other elements' height */
-    overflow-y: auto; /* Enables vertical scrolling when content overflows */
-    padding-right: 1rem; /* Add some padding to prevent scrollbar from overlapping content */
-    /* Optional: Style for the scrollbar for better aesthetics */
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: #888 #f1f1f1; /* Firefox */
+    max-height: calc(100vh - 250px - 70px);
+    overflow-y: auto;
+    padding-right: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
 }
 
-/* For Webkit browsers (Chrome, Safari) */
 .scrollable-table-container::-webkit-scrollbar {
     width: 8px;
 }
@@ -227,12 +352,74 @@ button:hover {
     background: #555;
 }
 
-/* Ensure content-area can flex and allow its children to scroll */
 .content-area {
     flex-grow: 1;
     padding: 1.5rem;
     background-color: #FFFFFF;
-    display: flex; /* Make it a flex container */
-    flex-direction: column; /* Stack children vertically */
-    overflow-y: hidden; /* Prevent content-area itself from scrolling, let inner container handle it */
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+}
+
+/* Selected Filters Display */
+.selected-filters-display {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background-color: var(--cruk-lighter-grey); /* Use lighter grey */
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.selected-filters-display h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #666666;
+    margin-bottom: 0.75rem;
+}
+
+.filter-chip {
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    border: 1px solid var(--cruk-pink); /* Border in CRUK Pink */
+    background-color: var(--cruk-pink); /* Solid CRUK Pink background */
+    color: white; /* White text on filter chip */
+}
+
+.filter-chip button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    line-height: 1;
+    width: 1rem;
+    height: 1rem;
+    color: white; /* White 'x' on pink filter chip */
+}
+
+.filter-chip button:hover {
+    background-color: #D3007B; /* Slightly darker pink on hover */
+    border-radius: 50%; /* Make hover area circular */
+}
+
+.filter-chip svg {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+
+.clear-all-filters-button {
+    transition: background-color 0.2s ease;
+    background-color: transparent;
+    border: 1px solid #cccccc;
+    color: #666666;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: normal;
+    box-shadow: none;
+}
+
+.clear-all-filters-button:hover {
+    background-color: #e0e0e0;
 }
