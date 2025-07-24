@@ -56,3 +56,22 @@ export async function fetchKeywords() {
     // Assuming the keywords-hierarchy endpoint returns the array directly (not wrapped in 'data')
     return result;
 }
+
+export const fetchStudyById = async (id) => {
+    console.log(`api.js: Preparing to fetch study by ID: /api/studies/${id}`);
+    try {
+        const response = await fetch(`/api/studies/${id}`);
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('Study not found.');
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('api.js: Raw study by ID API response:', data);
+        return data; // Return the study object directly
+    } catch (error) {
+        console.error('api.js: Error fetching study by ID:', error);
+        throw error;
+    }
+};

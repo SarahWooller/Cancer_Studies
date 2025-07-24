@@ -21,3 +21,5 @@ Route::get('/studies', [StudyController::class, 'filterStudies']);
 
 // Route for fetching the hierarchical keyword structure
 Route::get('/keywords-hierarchy', [KeywordController::class, 'hierarchy']);
+// New route to fetch a single study by ID
+Route::get('/studies/{id}', [StudyController::class, 'show']);

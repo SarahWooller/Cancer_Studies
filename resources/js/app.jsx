@@ -1,19 +1,22 @@
-import './bootstrap'; // Laravel's default JS utilities
-import '../css/app.css'; // Your main CSS file
+import './bootstrap'; // Your existing bootstrap import
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './components/App'; // Import your main App component
+import { BrowserRouter } from 'react-router-dom'; // <--- Import BrowserRouter
 
-// Ensure the root element exists in your public/index.html
-const container = document.getElementById('app');
-if (container) {
-    const root = createRoot(container);
-    root.render(
+import App from './components/App'; // Your main App component
+
+// Your main application CSS
+import '../css/app.css';
+
+const app = document.getElementById('app');
+
+if (app) {
+    createRoot(app).render(
         <React.StrictMode>
-            <App />
+            <BrowserRouter> {/* <--- Wrap your App component with BrowserRouter */}
+                <App />
+            </BrowserRouter>
         </React.StrictMode>
     );
-} else {
-    console.error('Root element #app not found in the DOM.');
 }

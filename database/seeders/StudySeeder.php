@@ -7,6 +7,7 @@ use App\Models\Study;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\File; // <--- NEW: Import the File facade
 
 class StudySeeder extends Seeder
 {
@@ -23,131 +24,21 @@ class StudySeeder extends Seeder
         // Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Define your mock studies data here.
-        // For hierarchical keywords, use the array format:
-        // ["child_name", "immediate_parent_name", "grandparent_name", "great_grandparent_name", ...]
-        $mockStudiesData = [
-            [
-                "title" => "Breast Cancer Somatic Mutation Database",
-                "keywords" => [
-                    "Breast", // This is a value under "Primary sites" > "Primary site"
-                    ["Somatic Mutations", "Multi-omic Data", "Patient study"], // Disambiguated 3-level path
-                    ["Multi-omic Data", "Patient study"], // Disambiguated 2-level path
-                ],
-                "data" => [
-                    "somatic mutation" => [
-                        "number of data points" => "3000",
-                        "format" => "vcf",
-                        "headings" => ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"],
-                        "technology" => "WGS",
-                        "algorithm" => "somatic sniper"
-                    ]
-                ]
-            ],
-            [
-                "title" => "Colorectal Organoid Drug Screening Response Data",
-                "keywords" => [
-                    "Colorectal", // Value under Primary site
-                    "In Vitro Study", // Category
-                    ["Organoid Study", "In Vitro Study"], // Subcategory under In Vitro Study
-                    ["Organoid Source", "Organoid Study", "In Vitro Study"], // Subcategory under Organoid Study
-                    ["Patient", "Organoid Source", "Organoid Study", "In Vitro Study"], // Value 'Patient' under 'Organoid Source' (4-levels deep)
-                ],
-                "data" => [
-                    "drug response" => [
-                        "format" => "csv",
-                        "headings" => ["Organoid_ID", "Drug_Name", "Concentration_uM", "Viability_%", "IC50"],
-                        "assay_type" => "Cell viability assay",
-                        "technology" => "High-throughput screening",
-                        "number of data points" => "500"
-                    ]
-                ]
-            ],
-            [
-                "title" => "Mouse Lung Cancer PDX Model Imaging Data (MRI)",
-                "keywords" => [
-                    "Lung", // Value under Primary site
-                    "Mouse study", // Category
-                    ["Imaging Data", "Mouse study"], // Subcategory under Mouse study
-                    ["Magnetic resonance imaging", "Imaging Data", "Mouse study"], // Value under Imaging Data
-                    ["Tumour Model", "Mouse study"], // Subcategory under Mouse study
-                    ["Patient-Derived xenograft", "Tumour Model", "Mouse study"] // Value under Tumour Model
-                ],
-                "data" => [
-                    "MRI scans" => [
-                        "format" => "DICOM",
-                        "headings" => ["Patient_ID", "Scan_Date", "Sequence", "Tumor_Volume_mm3", "Response_Category"],
-                        "resolution" => "0.5mm isotropic",
-                        "technology" => "3T MRI scanner",
-                        "number of data points" => "150"
-                    ]
-                ]
-            ],
-            [
-                "title" => "Gynaecological Cancer Patient Electronic Health Records",
-                "keywords" => [
-                    "Gynaecological", // Value under Primary site
-                    "Patient study", // Category
-                    ["Biobank Samples", "Patient study"], // Subcategory under Patient study
-                    ["Tissues", "Biobank Samples", "Patient study"], // Value under Biobank Samples
-                    ["Background", "Patient study"], // Subcategory under Patient study
-                    ["Demographic", "Background", "Patient study"] // Value under Background
-                ],
-                "data" => [
-                    "EHR" => [
-                        "format" => "JSONL",
-                        "source" => "Hospital A, B, C",
-                        "headings" => ["Patient_ID", "Age_at_Diagnosis", "Ethnicity", "Cancer_Type", "Stage", "Treatment_History", "Survival_Months"],
-                        "data_anonymization" => "HIPAA compliant",
-                        "number of data points" => "10000"
-                    ]
-                ]
-            ],
-            [
-                "title" => "Skin Cancer Population Incidence and Environmental Factors",
-                "keywords" => [
-                    "Skin", // Value under Primary site
-                    "Population Study", // Category
-                    ["Data Sources", "Population Study"], // Subcategory under Population Study
-                    ["Cancer registries", "Data Sources", "Population Study"], // Value under Data Sources
-                    ["Risk Factors", "Population Study"], // Subcategory under Population Study
-                    ["Environmental", "Risk Factors", "Population Study"] // Value under Risk Factors
-                ],
-                "data" => [
-                    "incidence data" => [
-                        "format" => "CSV",
-                        "source" => "National Cancer Registry",
-                        "headings" => ["Year", "Region", "Age_Group", "Sex", "Incidence_Rate", "UV_Exposure_Index", "Air_Pollution_Level"],
-                        "time_period" => "2000-2020",
-                        "number of data points" => "500000"
-                    ]
-                ]
-            ],
-            [
-                "title" => "Mouse Model Multi-omic Analysis",
-                "keywords" => [
-                    "Mouse study", // Category
-                    ["Multi-omic Data", "Mouse study"], // Subcategory under Mouse study
-                    ["Somatic Mutations", "Multi-omic Data", "Mouse study"] // Value under Multi-omic Data
-                ],
-                "data" => [
-                    "analysis" => "some analysis data"
-                ]
-            ],
-            // Added to test 4-level deep keyword linking
-            [
-                "title" => "Detailed In Vitro Cell Source Study",
-                "keywords" => [
-                    "In Vitro Study",
-                    ["Organ-on-a-Chip Study", "In Vitro Study"],
-                    ["Cell Source", "Organ-on-a-Chip Study", "In Vitro Study"],
-                    ["Cell line", "Cell Source", "Organ-on-a-Chip Study", "In Vitro Study"] // 4-level deep keyword
-                ],
-                "data" => [
-                    "cell_source_analysis" => "Data from cell line derived from Organ-on-a-Chip study."
-                ]
-            ]
-        ];
+        // --- START NEW: Read data from JSON file ---
+        $jsonPath = database_path('data/studies.json'); // Path to your JSON file
+
+        if (!File::exists($jsonPath)) {
+            $this->command->error("Error: studies.json not found at {$jsonPath}");
+            return; // Stop seeding if file doesn't exist
+        }
+
+        $mockStudiesData = json_decode(File::get($jsonPath), true); // Read and decode JSON
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->command->error("Error decoding studies.json: " . json_last_error_msg());
+            return; // Stop seeding if JSON is invalid
+        }
+        // --- END NEW: Read data from JSON file ---
 
         foreach ($mockStudiesData as $studyData) {
             $study = Study::create([

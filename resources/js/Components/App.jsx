@@ -1,27 +1,31 @@
 // resources/js/components/App.jsx
 
 import React, { useState, useEffect } from 'react';
+// --- START: React Router DOM Imports ---
+import { Routes, Route, Link } from 'react-router-dom'; // Import Routes, Route, and Link
+// --- END: React Router DOM Imports ---
+
 import { fetchStudies, fetchKeywords } from '../services/api';
-import NavBar from './NavBar'; // Import the NavBar component
+import NavBar from './NavBar';
+import StudyDetail from './StudyDetail'; // <--- Import the new StudyDetail component
 
 function App() {
     const [studies, setStudies] = useState([]);
     const [keywords, setKeywords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [selectedKeywords, setSelectedKeywords] = useState([]); // State to hold selected keyword objects
+    const [selectedKeywords, setSelectedKeywords] = useState([]);
 
-    // Function to handle keyword selection/deselection from NavBar
+    // Logo source state for easy adjustment
+    const appLogoSrc = "/images/your-cancer-research-uk-logo.png"; // <--- ADJUST THIS PATH TO YOUR LOGO
+
     const handleKeywordToggle = (keywordToToggle) => {
         setSelectedKeywords(prevSelectedKeywords => {
-            // Check if the keyword is already selected based on its ID
             const isSelected = prevSelectedKeywords.some(kw => kw.id === keywordToToggle.id);
 
             if (isSelected) {
-                // If already selected, remove it
                 return prevSelectedKeywords.filter(kw => kw.id !== keywordToToggle.id);
             } else {
-                // If not selected, add it to the list
                 return [...prevSelectedKeywords, keywordToToggle];
             }
         });
@@ -31,22 +35,16 @@ function App() {
         try {
             console.log('App.jsx (Component): Attempting to load initial data...');
 
-            // Fetch Keywords (only once, or less frequently, as they are static)
-            // We fetch keywords every time loadInitialData is called for simplicity,
-            // but in a real app, you might fetch them only on mount if they rarely change.
             console.log('App.jsx (Component): Starting keywords fetch...');
             const keywordsData = await fetchKeywords();
             console.log('App.jsx (Component): Keywords Data received:', keywordsData);
             setKeywords(keywordsData);
 
-            // Fetch Studies, passing only the IDs of selected keywords for filtering
             console.log('App.jsx (Component): Starting studies fetch with selected keyword IDs:', selectedKeywords.map(kw => kw.id));
             const studiesData = await fetchStudies(selectedKeywords.map(kw => kw.id));
             console.log('App.jsx (Component): Studies Data received:', studiesData);
-            console.log('App.jsx (Component): Type of studiesData:', typeof studiesData);
 
             setStudies(studiesData);
-
             setLoading(false);
         } catch (error) {
             console.error('App.jsx (Component): Error during initial data load:', error);
@@ -55,68 +53,90 @@ function App() {
         }
     };
 
-    // This useEffect will run on initial mount AND whenever selectedKeywords changes
     useEffect(() => {
         loadInitialData();
-    }, [selectedKeywords]); // Re-run loadInitialData when selectedKeywords state changes
+    }, [selectedKeywords]);
 
     // Render logic based on loading and error states
     if (loading) {
-        return <div>Loading data...</div>;
+        return <div className="loading-message">Loading application data...</div>;
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <div className="error-message">Error: {error}</div>;
     }
 
     return (
-        <div className="app-container"> {/* Main container for layout */}
+        <div id="app-container" className="app-container"> {/* Added id for clarity, ensure HTML root matches */}
             <header className="app-header">
-                <h1>Study Data Explorer</h1>
-                {/* You can add general navigation links here if you had them */}
+                {/* Your logo image here */}
+                <img src={appLogoSrc} alt="Cancer Research UK Logo" className="app-logo" />
+                <h1>Together we are beating Cancer</h1>
             </header>
 
-            <main className="app-main-content"> {/* Main content area, structured with sidebar */}
+            <main className="main-content">
                 <aside className="sidebar">
-                    {/* Render the NavBar component here, which acts as our Keyword Filter */}
-                    {/* Pass the full keyword hierarchy, current selections, and toggle handler */}
                     {keywords.length > 0 && (
                         <NavBar
                             keywords={keywords}
                             selectedKeywords={selectedKeywords}
-                            onKeywordSelect={handleKeywordToggle} // Pass the handler
+                            onKeywordSelect={handleKeywordToggle}
                         />
                     )}
                 </aside>
 
-                <section className="studies-section">
-                    <h2>Studies List</h2>
-                    {studies.length > 0 ? (
-                        <table className="studies-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Title</th>
-                                    {/* Add more headers if you want to display other study fields */}
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {studies.map(study => (
-                                    <tr key={study.id}>
-                                        <td>{study.id}</td>
-                                        <td>{study.title}</td>
-                                        {/* Add more cells for other study fields */}
-                                        <td>{new Date(study.created_at).toLocaleDateString()}</td>
-                                        <td>{new Date(study.updated_at).toLocaleDateString()}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p>No studies found with matching filters.</p>
-                    )}
+                <section className="content-area"> {/* Changed from studies-section to content-area for routing */}
+                    {/* Define your routes here */}
+                    <Routes>
+                        {/* Route for the main studies list */}
+                        <Route
+                            path="/"
+                            element={
+                                <>
+                                    <h2>CRUK Study Data Explorer</h2>
+                                    {studies.length > 0 ? (
+                                        <div className="scrollable-table-container">
+                                            <table className="studies-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Title</th>
+                                                        <th>Keywords</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {studies.map(study => (
+                                                        <tr key={study.id}>
+                                                            <td>{study.id}</td>
+                                                            <td>
+                                                                {/* Use Link component to navigate to study detail */}
+                                                                <Link to={`/studies/${study.id}`} className="study-title-link">
+                                                                    {study.title}
+                                                                </Link>
+                                                            </td>
+                                                            <td>
+                                                                {study.keywords && Array.isArray(study.keywords) && study.keywords.length > 0
+                                                                    ? study.keywords.map(keyword => keyword.keyword).join(', ')
+                                                                    : 'N/A'}
+                                                            </td>
+                                                            {/* Re-added these cells for consistency with headers */}
+
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                         </div>
+                                    ) : (
+                                        <p>No studies found with matching filters.</p>
+                                    )}
+                                </>
+                            }
+                        />
+
+                        {/* Route for the single study detail page */}
+                        {/* The :id is a URL parameter that StudyDetail will read */}
+                        <Route path="/studies/:id" element={<StudyDetail />} />
+                    </Routes>
                 </section>
             </main>
 

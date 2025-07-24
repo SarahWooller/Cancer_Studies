@@ -20,7 +20,7 @@ function NavBar({ keywords, onKeywordSelect, selectedKeywords }) {
                 // Select: add the full keyword object (which now has 'id')
                 newSelected = [...selectedKeywords, keywordItem];
             }
-            onKeywordSelect(newSelected); // Propagate selection change
+            onKeywordSelect(keywordItem); // Propagate selection change
         } else {
             // This is a category/subcategory, toggle its expanded state
             setExpandedKeywords(prevExpanded => {

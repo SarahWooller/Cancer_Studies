@@ -1,13 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* General reset and body styles */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f7f6;
-    color: #333;
+    font-family: 'Helvetica Neue', Arial, sans-serif; /* Clear, common sans-serif font */
+    background-color: #F8F8F8; /* Pale grey background */
+    color: #333333; /* Near black for general text */
 }
 
 #app {
@@ -18,84 +14,104 @@ body {
 
 /* App Header */
 .app-header {
-    background-color: #004d40; /* Dark teal */
-    color: white;
+    background-color: #F0F0F0; /* Slightly darker light grey for banner, very close to body */
+    color: #333333; /* Change text color to dark for contrast against light background */
     padding: 1rem 2rem;
     display: flex;
     align-items: center;
     gap: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Keep the subtle shadow */
 }
 
+/* If you have any headings inside your .app-header, ensure their color is also dark */
+.app-header h1, .app-header h2, .app-header h3 {
+    color: #333333; /* Make headings in the header dark as well */
+}
 .logo-placeholder {
-    background-color: #00796b; /* Slightly lighter teal */
+    /* If you're using an <img> tag for the logo, this might not be needed. */
+    /* If it's a placeholder div, you can remove it or keep it for now. */
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent white for contrast */
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     font-size: 0.9em;
 }
 
-/* Main Content Area */
-.main-content {
+/* Main Content Area - Ensure this matches your <main> className in App.jsx */
+.main-content { /* Or .app-main-content if you didn't change it */
     display: flex;
     flex-grow: 1;
 }
 
 .sidebar {
-    width: 280px; /* Width of the left navbar */
-    background-color: #e0f2f1; /* Light teal */
+    width: 280px;
+    background-color: #FFFFFF; /* White background for sidebar */
     padding: 1.5rem;
     box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
-    overflow-y: auto; /* Enable scrolling if content overflows */
+    overflow-y: auto;
 }
 
 .content-area {
     flex-grow: 1;
     padding: 1.5rem;
-    background-color: #fff;
-    overflow-y: auto; /* Enable scrolling if content overflows */
+    background-color: #FFFFFF; /* White background for content */
+    overflow-y: auto;
 }
 
-/* Messages */
-.loading-message, .error-message {
-    padding: 2rem;
-    text-align: center;
-    font-size: 1.2em;
-    color: #555;
+/* Headings - Using the deep blue/purple */
+h1, h2, h3, h4, h5, h6 {
+    color: #2E008B; /* Deep blue/purple for major headings */
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
 }
 
-.error-message {
-    color: #d32f2f; /* Red for errors */
+/* Buttons - Using a pop of bright pink for interactive elements */
+button {
+    background-color: #EC008C; /* Bright Pink */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
 }
 
-/* Basic table styling (for StudyTable component) */
-.study-table {
+button:hover {
+    background-color: #D3007B; /* Slightly darker pink on hover */
+}
+
+/* Table Styling */
+.studies-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 1rem;
 }
 
-.study-table th, .study-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
+.studies-table th, .studies-table td {
+    border: 1px solid #E0E0E0; /* Lighter border for clean look */
+    padding: 12px;
     text-align: left;
 }
 
-.study-table th {
-    background-color: #f2f2f2;
+.studies-table th {
+    background-color: #F0F0F0; /* Pale grey header */
+    color: #333333;
     cursor: pointer;
+    font-weight: bold;
 }
 
-.study-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+.studies-table tr:nth-child(even) {
+    background-color: #FAFAFA; /* Slightly off-white for even rows */
 }
 
-.study-table tr:hover {
-    background-color: #eaf7f7;
+.studies-table tr:hover {
+    background-color: #E6F7FF; /* Very pale blue on hover for clarity */
 }
 
 .study-title-link {
-    color: #00796b;
+    color: #00796b; /* Keeping this from your original, or we can change to a brand blue/pink */
     text-decoration: none;
     cursor: pointer;
 }
@@ -104,50 +120,22 @@ body {
     text-decoration: underline;
 }
 
-/* Basic styling for StudyDetail (we'll refine later) */
-.study-detail-panel {
-    border: 1px solid #ccc;
-    padding: 1.5rem;
-    margin-top: 1.5rem;
-    background-color: #fdfdfd;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+/* NavBar Styling */
+.navbar-container {
+    padding: 1.5rem; /* Ensure consistent padding with sidebar */
+    background-color: #FFFFFF; /* White background for navbar */
 }
 
-.study-detail-panel h2 {
-    color: #004d40;
+.navbar-container h3 {
+    color: #2E008B; /* Deep blue/purple for navbar heading */
     margin-top: 0;
+    margin-bottom: 1rem;
 }
 
-.study-detail-panel pre {
-    background-color: #eee;
-    padding: 1rem;
-    border-radius: 4px;
-    white-space: pre-wrap; /* Ensures long lines wrap */
-    word-break: break-all; /* Breaks words if necessary */
-    font-family: monospace;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.study-detail-panel button {
-    background-color: #00796b;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 1rem;
-}
-
-.study-detail-panel button:hover {
-    background-color: #004d40;
-}
-
-/* NavBar Styling (initial) */
 .navbar-container ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .navbar-container li {
@@ -157,7 +145,9 @@ body {
 .navbar-container .keyword-item {
     cursor: pointer;
     padding: 5px 0;
-    color: #004d40;
+    color: #333333; /* Near black for keyword text */
+    display: flex; /* For checkbox alignment */
+    align-items: center;
 }
 
 .navbar-container .keyword-item:hover {
@@ -166,22 +156,83 @@ body {
 
 .navbar-container .selected-keyword {
     font-weight: bold;
-    color: #00796b;
+    color: #EC008C; /* Bright Pink for selected keywords */
 }
 
 .navbar-container .keyword-children {
-    margin-left: 15px;
-    border-left: 1px solid #b2dfdb;
-    padding-left: 5px;
+    margin-left: 20px; /* Increased indent for clarity */
+    border-left: 2px solid #E0E0E0; /* Pale grey border for hierarchy */
+    padding-left: 10px;
+    list-style: none; /* Ensure no bullets on children */
 }
 
 .navbar-container .checkbox-item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px; /* Spacing between checkbox and label */
     cursor: pointer;
+    color: #333333; /* Default text color */
 }
 
 .navbar-container .checkbox-item input[type="checkbox"] {
     cursor: pointer;
+    /* You might need to style checkbox appearance with custom CSS if default isn't good */
+    accent-color: #EC008C; /* Makes the tick/box itself pink in some browsers */
+}
+
+.keyword-category-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #2E008B; /* Deep blue/purple for category headers */
+    padding: 5px 0;
+}
+
+.expand-icon {
+    font-size: 0.8em;
+    transition: transform 0.2s ease;
+}
+
+.keyword-category-header:hover .category-name {
+    text-decoration: underline;
+}
+
+.scrollable-table-container {
+    max-height: calc(100vh - 250px); /* Example: Adjust this value based on your header/footer/other elements' height */
+    overflow-y: auto; /* Enables vertical scrolling when content overflows */
+    padding-right: 1rem; /* Add some padding to prevent scrollbar from overlapping content */
+    /* Optional: Style for the scrollbar for better aesthetics */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #888 #f1f1f1; /* Firefox */
+}
+
+/* For Webkit browsers (Chrome, Safari) */
+.scrollable-table-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollable-table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.scrollable-table-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.scrollable-table-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Ensure content-area can flex and allow its children to scroll */
+.content-area {
+    flex-grow: 1;
+    padding: 1.5rem;
+    background-color: #FFFFFF;
+    display: flex; /* Make it a flex container */
+    flex-direction: column; /* Stack children vertically */
+    overflow-y: hidden; /* Prevent content-area itself from scrolling, let inner container handle it */
 }
