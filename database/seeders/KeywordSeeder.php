@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Keyword;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class KeywordSeeder extends Seeder
 {
@@ -16,245 +17,33 @@ class KeywordSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Keyword::truncate();
 
-        $keywordsData = [
-            [
-                "Primary site" => [
-                    "Primary sites" => [
-                        "Breast",
-                        "Central Nervous System",
-                        "Colorectal",
-                        "Gynaecological",
-                        "Haematological",
-                        "Head and Neck",
-                        "Liver",
-                        "Lung",
-                        "Sarcoma",
-                        "Skin",
-                        "Unknown",
-                        "Upper GI",
-                        "Urological"
-                    ]
-                ]
-            ],
-            [
-                "In Vitro Study" => [
-                    "Cell Line Study" => [
-                        "Cell Line Type" => [
-                            "Adherent",
-                            "Suspension"
-                        ],
-                        "Cell Source" => [
-                            "Human",
-                            "Mouse"
-                        ],
-                        "Genetic Modification" => [
-                            "Edited",
-                            "Wild-type"
-                        ],
-                    ],
-                    "Organ-on-a-Chip Study" => [
-                        "Cell Source" => [
-                            "Cell line",
-                            "Mouse",
-                            "Patient",
-                            "induced Pluripotent Stem Cell"
-                        ],
-                        "OOAC Platform/Type" => [
-                            "Multi-organ",
-                            "Organ",
-                            "Tumour"
-                        ]
-                    ],
-                    "Organoid Study" => [
-                        "Organoid Source" => [
-                            "Cell line",
-                            "Induced Pluripotent Stem Cell",
-                            "Mouse",
-                            "Patient"
-                        ],
-                    ]
-                ]
-            ],
-            [
-                "Mouse study" => [
-                    "Biobank Samples" => [
-                        "Bloods",
-                        "Cells",
-                        "DNA/RNA",
-                        "Other Fluids",
-                        "Organoids",
-                        "Tissues"
-                    ],
-                    "Biopsy & Lab Results" => [
-                        "Biomarkers",
-                        "Flow Cytometry",
-                        "Immunohistochemistry"
-                    ],
-                    "Imaging Data" => [
-                        "Medical photography",
-                        "Microscopy",
-                        "Magnetic resonance imaging",
-                        "Nuclear medicine imaging procedure",
-                        "Radiographic imaging procedure",
-                        "Ultrasonography",
-                        "Fluorescence imaging",
-                        "Bioluminescence Imaging",
-                    ],
-                    "Longitudinal Follow up" => [
-                        "Behavioural data",
-                        "Clinical observations",
-                        "Response outcomes",
-                        "Side effects",
-                        "Survival data"
-                    ],
-                    "Multi-omic Data" => [
-                        "Circulating tumour cells",
-                        "Circulating tumour DNA",
-                        "Copy Number Variations",
-                        "Epigenetic Data",
-                        "Exosomes/Genomes",
-                        "Fusion Genes",
-                        "Germline Mutations",
-                        "Metabolomics",
-                        "Protein expression profiles",
-                        "RNA Sequence Expression Profile",
-                        "Single-cell",
-                        "Somatic Mutations",
-                        "Spatial Biology Data"
-                    ],
-                    "Treatments" => [
-                        "Medication",
-                        "Organ resection and other ablations",
-                        "Radiotherapies"
-                    ],
-                    "Tumour Model" => [
-                        "Genetically engineered mouse model",
-                        "Patient-Derived xenograft",
-                        "Syngeneic"
-                    ]
-                ]
-            ],
-            [
-                "Patient study" => [
-                    "Background" => [
-                        "Demographic",
-                        "Family history",
-                        "Lifestyle",
-                        "Quality of life (eg Education and/or employment)"
-                    ],
-                    "Biobank Samples" => [
-                        "Bloods",
-                        "Cells",
-                        "DNA/RNA",
-                        "Other Fluids",
-                        "Organoids",
-                        "Primary cell lines",
-                        "Tissues"
-                    ],
-                    "Biopsy Reports and Lab Results" => [
-                        "Biomarkers",
-                        "Complete blood count",
-                        "H&E-stained tissue microarrays",
-                        "Immunohistochemistry",
-                        "Kidney function tests",
-                        "Liver function tests",
-                        "Other bodily fluid analyses",
-                        "Tumour details",
-                        "Urine tests"
-                    ],
-                    "Imaging Data" => [
-                        "Bone Scans",
-                        "Computed Tomography",
-                        "Imaging Mass Cytometry",
-                        "Magnetic Resonance Imaging",
-                        "Mammography",
-                        "Positron Emission Tomography",
-                        "Tomosynthesis",
-                        "Ultrasound",
-                        "X-rays"
-                    ],
-                    "Longitudinal Follow up" => [
-                        "Patient-Reported Outcomes",
-                        "Response outcomes",
-                        "Side effects",
-                        "Survival data"
-                    ],
-                    "Multi-omic Data" => [
-                        "Circulating tumour cells",
-                        "Circulating tumour DNA",
-                        "Copy Number Variations",
-                        "Epigenetic Data",
-                        "Exosomes/Genomes",
-                        "Fusion Genes",
-                        "Germline Mutations",
-                        "Metabolomics",
-                        "Protein expression profiles",
-                        "RNA Sequence Expression Profile",
-                        "Single-cell",
-                        "Somatic Mutations",
-                        "Spatial Biology Data"
-                    ],
-                    "Treatments" => [
-                        "Medication",
-                        "Organ resection and other ablations",
-                        "Radiotherapies"
-                    ]
-                ]
-            ],
-            [
-                "Population Study" => [
-                    "Data Sources" => [
-                        "Administrative data (e.g., insurance claims)",
-                        "Biobanks (population cohorts)",
-                        "Cancer registries",
-                        "Electronic Health Records (EHR)",
-                        "Environmental monitoring data",
-                        "National health surveys"
-                    ],
-                    "Interventions/Policies" => [
-                        "Health education campaigns",
-                        "Policy changes",
-                        "Prevention programs",
-                        "Screening programs"
-                    ],
-                    "Outcomes Measured" => [
-                        "Education/Employment",
-                        "Incidence",
-                        "Morbidity/Mortality",
-                        "Social well-being"
-                    ],
-                    "Population Demographics" => [
-                        "Age",
-                        "Ethnicity",
-                        "Geographic location",
-                        "Sex",
-                        "Socioeconomic Status"
-                    ],
-                    "Risk Factors" => [
-                        "Environmental",
-                        "Genetic",
-                        "Infections",
-                        "Lifestyle",
-                        "Medical history",
-                        "Occupational"
-                    ],
-                    "Study Design" => [
-                        "Case-control study",
-                        "Cohort study",
-                        "Cross-sectional study",
-                        "Ecological study",
-                        "Intervention study"
-                    ]
-                ]
-            ]
-        ];
+        $jsonPath = database_path('data/keywords.json');
 
+        // Check if the file exists before attempting to read it.
+        if (!File::exists($jsonPath)) {
+            echo "The keywords.json file was not found at: {$jsonPath}\n";
+            return;
+        }
+
+        // Get the contents of the JSON file.
+        $jsonContents = File::get($jsonPath);
+
+        // Decode the JSON content into a PHP associative array.
+        $keywordsData = json_decode($jsonContents, true);
+
+        // Check for JSON decoding errors.
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            echo "Error decoding JSON file: " . json_last_error_msg() . "\n";
+            return;
+        }
+
+        // Iterate through the loaded data and seed the keywords.
         foreach ($keywordsData as $topLevelArray) {
             foreach ($topLevelArray as $categoryName => $categoryData) {
+                // The recursion starts here, handling all subsequent nesting.
                 $this->seedKeywordNode($categoryName, $categoryData, null);
             }
         }
-
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
